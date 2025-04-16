@@ -10,4 +10,5 @@ module add::store {
     public fun get(addr: address): u64 acquires Store {
         borrow_global<Store>(addr).value
     }
+    
 }
