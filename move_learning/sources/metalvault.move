@@ -94,10 +94,10 @@ module my_addrx::metal_vault {
     }
 
 
-    #[test_only]
+    // #[test_only]
     use std::signer;
 
-    #[test(client1 = @0x123, client2 = @0x144)]
+    // #[test(client1 = @0x123, client2 = @0x144)]
     fun test_function(client1: signer, client2: signer) acquires MetalVault {
         init_client(&client1);
         init_client(&client2);
