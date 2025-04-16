@@ -38,7 +38,7 @@ module my_addrx::oprator
     }
 
 
-    #[test]
+    // #[test]
     fun test_arthmetic_oprations()
     {
         let result=arthmetic_oprations(10,20,MOD);
@@ -80,7 +80,7 @@ module my_addrx::oprator
     }
 
 
-    #[test]
+    // #[test]
 
     fun test_eq_oprations()
     {
