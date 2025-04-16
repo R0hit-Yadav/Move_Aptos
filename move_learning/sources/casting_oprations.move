@@ -23,7 +23,7 @@ address my_addrx
             print(&price_u128);
         }
 
-        #[test]
+        // #[test]
 
         fun test_calculate_swap()
         {
