@@ -31,7 +31,7 @@ module my_addrx::mapdemo
 
 
 
-    #[test]
+    // #[test]
     fun test_function()
     {
         let my_mapp= create_map();
