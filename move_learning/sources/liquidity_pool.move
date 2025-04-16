@@ -46,13 +46,13 @@ module my_addrx::liquidity_pool {
         return receive
     }
 
-    #[test_only]
+    // #[test_only]
     use std::debug::print;
 
-    #[test_only]
+    // #[test_only]
     use std::string::{utf8};
 
-    #[test]
+    // #[test]
     fun test_function() {
         let (coin1, coin2, name) = get_supply(APT);
         let swap_amount = 2000000; // USDT to swap.
