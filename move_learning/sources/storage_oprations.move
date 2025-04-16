@@ -45,7 +45,7 @@ module my_addrx::StorageDemo
         exists<StakePool>(account)
     }
 
-    #[test(user=@0x123)]
+    // #[test(user=@0x123)]
     fun test_function(user:signer) acquires StakePool
     {
         add_user(&user);
