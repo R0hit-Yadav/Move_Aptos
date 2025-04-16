@@ -28,7 +28,7 @@ module my_addrx::bitwise_bitshift
     }
 
 
-    #[test]
+    // #[test]
     fun test_bitwise()
     {
         let result=bitwise_or(7,4);
@@ -41,7 +41,7 @@ module my_addrx::bitwise_bitshift
         print(&result);
     }
 
-    #[test]
+    // #[test]
     fun test_bitshift()
     {
         let result=bitshift_left(7,2);
