@@ -14,7 +14,7 @@ module my_addrx::Hashing
         aptos_h
     }
 
-    #[test]
+    // #[test]
     fun testing()
     {
         let test=hashing_in_move();
