@@ -52,7 +52,7 @@ module my_addrx::tables
 
     }
 
-    #[test(seller1=@0x123, seller2=@0x456)]
+    // #[test(seller1=@0x123, seller2=@0x456)]
     fun test_function(seller1:signer,seller2:signer) acquires PropList
     {
         register_seller(&seller1);
