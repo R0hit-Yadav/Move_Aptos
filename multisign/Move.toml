@@ -1,0 +1,17 @@
+[package]
+name = "multisign"
+version = "1.0.0"
+authors = []
+
+[addresses]
+addx="0x374ace93268d3250c156bb8d28837fa1c9c27864e3766fb4abcad08e50d81cef"
+mutliadd="0x4463782ae8ecf797b4828829c8edd90b8451cb1c4dc62b03166a0d69b50a0817"
+
+[dev-addresses]
+
+[dependencies.AptosFramework]
+git = "https://github.com/aptos-labs/aptos-framework.git"
+rev = "mainnet"
+subdir = "aptos-framework"
+
+[dev-dependencies]
