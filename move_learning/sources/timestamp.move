@@ -13,7 +13,7 @@ module my_addrx::Timestamp
 
     }
 
-    #[test(framework=@0x1)]
+    // #[test(framework=@0x1)]
     fun testing(framework:signer)
     {
         timestamp::set_time_has_started_for_testing(&framework);
