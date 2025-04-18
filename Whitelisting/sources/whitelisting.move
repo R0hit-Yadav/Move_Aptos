@@ -41,7 +41,6 @@ The contract admin can manage the whitelist, including adding and removing addre
 
 
 
-
 /*
 ===========>Work Flow<================
 module owner @rohit_add --> create_vault() --> RESOURCE
