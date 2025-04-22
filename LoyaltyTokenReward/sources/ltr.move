@@ -1,3 +1,64 @@
+/*Practical-2 
+=========>Loyalty Reward Token System<=============
+==>Overview:
+
+This system is designed to reward customers with digital tokens that act as loyalty points.These tokens can be earned, redeemed, and expire after a set period.
+
+=>Features & Requirements:
+
+1.LoyaltyToken 
+    -> A custom coin that represents reward points.
+2.Admin Control 
+    -> Only the business owner can mint new tokens for customers. It’s not directly transferred to the customer, it will be stored somewhere else.
+3.Customer Functions
+    ->Redeem tokens which admin minted for them.
+    ->Check balance.
+4.Token Expiry System
+    ->Expired tokens cannot be used.
+    ->At the time of minting the token, the business owner will provide a token expiry second.
+    ->Admin is able to withdraw or burn these expired tokens.
+
+NOTE: Main focus of this practice is to create custom coins, and any operation related to storage uses an object instead of a resource account.
+
+*/
+
+
+/*
+===========>Work Flow<================
+module owner @admin_rohit --> init_module --> Create Resource --> Admin Functions --> User Functions --> Error Handling
+
+[admin @admin_rohit]
+  |-- initialize module
+  |-- create AdminData
+        |-- mint cap
+        |-- burn cap
+        |-- freeze cap
+        |-- users vector
+  |-- initialize LoyaltyToken
+        |-- balance
+        |-- expiry
+
+[admin Functions]
+  |-- mint tokens
+  |-- create object
+  |-- generate signer
+  |-- Update user account
+  |-- check expiry
+  |-- burn expired tokens
+
+[User Functions]
+  |-- redeem tokens 
+  |-- token expiry check
+  |-- transfer vild tokens
+
+[ERROR handling]
+  |-- Auth not admin:100 
+  |-- Auth not User:101
+  |-- token expired:102
+
+*/
+
+
 module admin_rohit::ltr {
     use std::signer;
     use std::vector;
