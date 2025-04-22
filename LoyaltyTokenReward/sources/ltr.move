@@ -40,6 +40,7 @@ module owner @admin_rohit --> init_module --> Create Resource --> Admin Function
 
 [admin Functions]
   |-- mint tokens
+  |-- withdraw expired tokens
   |-- create object
   |-- generate signer
   |-- Update user account
@@ -52,9 +53,9 @@ module owner @admin_rohit --> init_module --> Create Resource --> Admin Function
   |-- transfer vild tokens
 
 [ERROR handling]
-  |-- Auth not admin:100 
-  |-- Auth not User:101
-  |-- token expired:102
+  |-- E_NOT_ADMIN (Auth not admin): 100 
+  |-- E_NOT_USER (Auth not User): 101
+  |-- E_TOKENS_EXPIRED (token expired): 102
 
 */
 
