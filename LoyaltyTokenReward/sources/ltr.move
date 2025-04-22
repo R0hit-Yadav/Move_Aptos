@@ -9,7 +9,7 @@ This system is designed to reward customers with digital tokens that act as loya
 1.LoyaltyToken 
     -> A custom coin that represents reward points.
 2.Admin Control 
-    -> Only the business owner can mint new tokens for customers. It’s not directly transferred to the customer, it will be stored somewhere else.
+    -> Only the business owner can mint new tokens for customers. It's not directly transferred to the customer, it will be stored somewhere else.
 3.Customer Functions
     ->Redeem tokens which admin minted for them.
     ->Check balance.
@@ -133,6 +133,7 @@ module admin_rohit::ltr {
     }
 
     // mint token 
+
     public entry fun mint_tokens(admin: &signer,user: address,amount: u64,expiry_days: u64) acquires AdminData 
     {
         assert!(signer::address_of(admin) == @admin_rohit, E_NOT_ADMIN);
@@ -298,6 +299,33 @@ module admin_rohit::ltr {
         balance
     }
 
+    #[view]
+    public fun check_token_expiry(user_addr: address): vector<u64> acquires AdminData, LoyaltyToken 
+    {
+        let admin_data = borrow_global<AdminData>(@admin_rohit);
+        let expiry_list = vector::empty<u64>();
+
+        let index = find_user_index(&admin_data.users, user_addr);
+        if (index == vector::length(&admin_data.users)) 
+        {
+            return expiry_list;
+        };
+
+        let user_account = vector::borrow(&admin_data.users, index);
+        let i = 0;
+        while (i < vector::length(&user_account.token_addresses)) 
+        {
+            let token_addr = *vector::borrow(&user_account.token_addresses, i);
+            if (exists<LoyaltyToken>(token_addr)) 
+            {
+                let loyalty_token = borrow_global<LoyaltyToken>(token_addr);
+                vector::push_back(&mut expiry_list, loyalty_token.expiry);
+            };
+            i = i + 1;
+        };
+        expiry_list
+    }
+
     #[test(admin=@admin_rohit, user=@0x123, user2=@0x345, aptos_framework=@aptos_framework)]
     fun test_cases(admin: &signer,user: &signer,user2: &signer,aptos_framework: &signer) acquires AdminData, LoyaltyToken 
     {
@@ -328,6 +356,9 @@ module admin_rohit::ltr {
         print(&utf8(b"User1 balance after mint"));
         print(&check_balance(user1_addr));
         assert!(check_balance(user1_addr) == 100, 1);
+
+        // check expiry of token of address
+        print(&check_token_expiry(user1_addr));
 
         // Redeem tokens
         print(&utf8(b"Redeem tokens"));
