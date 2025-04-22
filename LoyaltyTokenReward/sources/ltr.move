@@ -133,7 +133,6 @@ module admin_rohit::ltr {
     }
 
     // mint token 
-
     public entry fun mint_tokens(admin: &signer,user: address,amount: u64,expiry_days: u64) acquires AdminData 
     {
         assert!(signer::address_of(admin) == @admin_rohit, E_NOT_ADMIN);
@@ -319,7 +318,9 @@ module admin_rohit::ltr {
             if (exists<LoyaltyToken>(token_addr)) 
             {
                 let loyalty_token = borrow_global<LoyaltyToken>(token_addr);
-                vector::push_back(&mut expiry_list, loyalty_token.expiry);
+                let expiry_in_days = loyalty_token.expiry / 86400;
+                vector::push_back(&mut expiry_list, expiry_in_days);
+                // vector::push_back(&mut expiry_list, loyalty_token.expiry);
             };
             i = i + 1;
         };
@@ -358,6 +359,7 @@ module admin_rohit::ltr {
         assert!(check_balance(user1_addr) == 100, 1);
 
         // check expiry of token of address
+        print(&utf8(b"Check user1 tokens expiry in days"));
         print(&check_token_expiry(user1_addr));
 
         // Redeem tokens
