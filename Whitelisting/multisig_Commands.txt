@@ -1,0 +1,52 @@
+main account: 0x374ace93268d3250c156bb8d28837fa1c9c27864e3766fb4abcad08e50d81cef
+owner 2 : 0x7d083fb02e4da9f58e88e3db554e455b3c058684500909e747153fd3e9519c06
+owner 3 : 0xb99a6be6569edc75a2f8bd515325c1ceb44fd24e2fd9defc3fc96d56394def60
+
+multisign address : 1343a6e0a0f6107a8d8bd4970014c7ed9daa413c2d1eb11203ffe23c61eefd7b
+
+store private key 
+own2.key
+own3.key
+
+Commands
+
+aptos multisig create --additional-owners 0x7d083fb02e4da9f58e88e3db554e455b3c058684500909e747153fd3e9519c06 --num-signatures-required 2 --private-key-file own2.key --assume-yes
+aptos multisig create --additional-owners 0xb99a6be6569edc75a2f8bd515325c1ceb44fd24e2fd9defc3fc96d56394def60 --num-signatures-required 2 --private-key-file own3.key --assume-yes
+
+==>check sign required
+aptos move view --function-id 0x1::multisig_account::num_signatures_required --args address:"1343a6e0a0f6107a8d8bd4970014c7ed9daa413c2d1eb11203ffe23c61eefd7b"
+
+==>check owners
+aptos move view --function-id 0x1::multisig_account::owners --args address:"1343a6e0a0f6107a8d8bd4970014c7ed9daa413c2d1eb11203ffe23c61eefd7b"
+
+==>sequence numbers
+aptos move view --function-id 0x1::multisig_account::last_resolved_sequence_number --args address:"1343a6e0a0f6107a8d8bd4970014c7ed9daa413c2d1eb11203ffe23c61eefd7b"
+
+aptos move view --function-id 0x1::multisig_account::next_sequence_number --args address:"1343a6e0a0f6107a8d8bd4970014c7ed9daa413c2d1eb11203ffe23c61eefd7b"
+
+==>publish playload
+aptos move build-publish-payload --named-addresses test_account=1343a6e0a0f6107a8d8bd4970014c7ed9daa413c2d1eb11203ffe23c61eefd7b --json-output-file publication.json --assume-yes
+
+==>create transaction
+aptos multisig create-transaction --multisig-address 1343a6e0a0f6107a8d8bd4970014c7ed9daa413c2d1eb11203ffe23c61eefd7b --json-file publication.json --store-hash-only --private-key-file own2.key --assume-yes
+
+==>get transaction 
+aptos move view --function-id 0x1::multisig_account::get_transaction --args address:"1343a6e0a0f6107a8d8bd4970014c7ed9daa413c2d1eb11203ffe23c61eefd7b" u64:1
+
+aptos move view --function-id 0x1::multisig_account::get_pending_transactions --args address:"1343a6e0a0f6107a8d8bd4970014c7ed9daa413c2d1eb11203ffe23c61eefd7b"
+
+==>check execution
+aptos move view --function-id 0x1::multisig_account::can_be_executed --args address:"1343a6e0a0f6107a8d8bd4970014c7ed9daa413c2d1eb11203ffe23c61eefd7b" u64:1 
+
+==>verify tx proposal 
+aptos multisig verify-proposal --multisig-address 1343a6e0a0f6107a8d8bd4970014c7ed9daa413c2d1eb11203ffe23c61eefd7b --json-file publication.json --sequence-number 1
+
+==>approve tx
+aptos multisig approve --multisig-address 1343a6e0a0f6107a8d8bd4970014c7ed9daa413c2d1eb11203ffe23c61eefd7b --sequence-number 1 --private-key-file own2.key --assume-yes
+
+aptos multisig execute-with-payload --multisig-address 1343a6e0a0f6107a8d8bd4970014c7ed9daa413c2d1eb11203ffe23c61eefd7b --json-file publication.json --private-key-file own2.key --max-gas 10000 --assume-yes
+
+==>approve tx 
+aptos multisig approve --multisig-address 1343a6e0a0f6107a8d8bd4970014c7ed9daa413c2d1eb11203ffe23c61eefd7b --sequence-number 2 --private-key-file main.key --assume-yes
+
+aptos multisig execute --multisig-address 1343a6e0a0f6107a8d8bd4970014c7ed9daa413c2d1eb11203ffe23c61eefd7b --private-key-file main.key --max-gas 10000 --assume-yes
