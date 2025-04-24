@@ -71,12 +71,18 @@ module rohit_add::Whitelist {
     use aptos_framework::account;
 
     // error codes
-    const E_NOT_ADMIN: u64 = 100; //not admin 
-    const E_ALREADY_WHITELISTED: u64 = 101; // whitelisted already
-    const E_NOT_WHITELISTED: u64 = 102; // not whitelisted
-    const E_NOT_ENOUGH_FUNDS: u64 = 103; // have not enough funds
-    const E_ACCOUNT_NOT_FOUND: u64 = 104; // account not found 
-    const E_INVALID_OPERATION: u64 = 105; // not valid opration 
+    /// Unautorized access
+    const E_NOT_ADMIN: u64 = 100;
+    /// User already whitelisted
+    const E_ALREADY_WHITELISTED: u64 = 101;
+    /// User not whitelisted
+    const E_NOT_WHITELISTED: u64 = 102;
+    /// Not enough funds in the account 
+    const E_NOT_ENOUGH_FUNDS: u64 = 103;
+    /// Account not found in the vault 
+    const E_ACCOUNT_NOT_FOUND: u64 = 104;
+    /// Invalid operation  
+    const E_INVALID_OPERATION: u64 = 105;  
 
     // for generate resource address
     const VAULT_SEED: vector<u8> = b"SECURE_VAULT";
