@@ -201,7 +201,7 @@ module rohit_add::Whitelist {
     }
 
     // main functions
-    public entry fun create_vault(admin: &signer)  //crate vault
+    fun init_module(admin: &signer) 
     {
         let admin_addr = signer::address_of(admin);
         check_admin(admin_addr);
@@ -212,6 +212,13 @@ module rohit_add::Whitelist {
         move_to(&vault_signer, Vault {balances: vector::empty<UserBalance<AptosCoin>>(),vault_signer: vault_signer_cap});
         move_to(admin, Whitelist {users: vector::empty<address>()});
     }
+
+    // Deprecated create_vault function
+    public entry fun create_vault(admin: &signer) 
+    {
+        assert!(false, E_INVALID_OPERATION);
+    }
+
 
     // add address to the whitelist
     public entry fun add_to_whitelist(admin: &signer, new_users: vector<address>) acquires Whitelist 
@@ -389,7 +396,7 @@ module rohit_add::Whitelist {
         mint_test_coins(aptos_framework, user2, 100);
         mint_test_coins(aptos_framework, user3, 100);
 
-        create_vault(admin);
+        init_module(admin);
 
         let new_users: vector<address> = vector::empty();
         vector::push_back(&mut new_users, user1_addr);
