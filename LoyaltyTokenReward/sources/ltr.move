@@ -178,6 +178,11 @@ module admin_rohit::ltr {
     {
         let user_addr = signer::address_of(user);
         let admin_data = borrow_global_mut<AdminData>(@admin_rohit);
+
+        if (!coin::is_account_registered<LoyaltyCoin>(user_addr)) 
+        {
+            coin::register<LoyaltyCoin>(user);
+        };
         
         //check existance of user 
         let index = find_user_index(&admin_data.users, user_addr);
@@ -212,9 +217,17 @@ module admin_rohit::ltr {
     // withdraw expired tokens 
     public entry fun withdraw_expired_tokens(admin: &signer) acquires AdminData, LoyaltyToken 
     {
+
         assert!(signer::address_of(admin) == @admin_rohit, E_NOT_ADMIN);
+        let admin_addr = signer::address_of(admin);
         
         let admin_data = borrow_global_mut<AdminData>(@admin_rohit);
+
+          if (!coin::is_account_registered<LoyaltyCoin>(admin_addr)) 
+        {
+            coin::register<LoyaltyCoin>(admin);
+        };
+
         let current_time = timestamp::now_seconds();
         
         let users_to_remove = vector::empty<u64>();
