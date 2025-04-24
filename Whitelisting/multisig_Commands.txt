@@ -5,6 +5,7 @@ owner 3 : 0xb99a6be6569edc75a2f8bd515325c1ceb44fd24e2fd9defc3fc96d56394def60
 multisign address : 1343a6e0a0f6107a8d8bd4970014c7ed9daa413c2d1eb11203ffe23c61eefd7b
 
 store private key 
+own1.key main account
 own2.key
 own3.key
 
