@@ -71,8 +71,12 @@ module admin_rohit::ltr {
     use aptos_framework::object::{Self, ObjectCore};
 
     // erros codes 
+
+    /// Unautorized access
     const E_NOT_ADMIN: u64 = 100;
+    /// User not found
     const E_NOT_USER: u64 = 101;
+    /// Token expired
     const E_TOKENS_EXPIRED: u64 = 102;
 
     // custom coin 
