@@ -315,34 +315,40 @@ module admin_rohit::ltr {
         balance
     }
 
-    #[view]
-    public fun check_token_expiry(user_addr: address): vector<u64> acquires AdminData, LoyaltyToken 
+#[view]
+public fun check_token_expiry(user_addr: address): vector<u64> acquires AdminData, LoyaltyToken 
+{
+    let admin_data = borrow_global<AdminData>(@admin_rohit);
+    let expiry_list = vector::empty<u64>();
+
+    let index = find_user_index(&admin_data.users, user_addr);
+    if (index == vector::length(&admin_data.users)) 
     {
-        let admin_data = borrow_global<AdminData>(@admin_rohit);
-        let expiry_list = vector::empty<u64>();
+        return expiry_list;
+    };
 
-        let index = find_user_index(&admin_data.users, user_addr);
-        if (index == vector::length(&admin_data.users)) 
+    let user_account = vector::borrow(&admin_data.users, index);
+    let current_time = timestamp::now_seconds(); 
+    let i = 0;
+    while (i < vector::length(&user_account.token_addresses)) 
+    {
+        let token_addr = *vector::borrow(&user_account.token_addresses, i);
+        if (exists<LoyaltyToken>(token_addr)) 
         {
-            return expiry_list;
-        };
-
-        let user_account = vector::borrow(&admin_data.users, index);
-        let i = 0;
-        while (i < vector::length(&user_account.token_addresses)) 
-        {
-            let token_addr = *vector::borrow(&user_account.token_addresses, i);
-            if (exists<LoyaltyToken>(token_addr)) 
+            let loyalty_token = borrow_global<LoyaltyToken>(token_addr);
+            if (loyalty_token.expiry > current_time) 
             {
-                let loyalty_token = borrow_global<LoyaltyToken>(token_addr);
-                let expiry_in_days = loyalty_token.expiry / 86400;
-                vector::push_back(&mut expiry_list, expiry_in_days);
-                // vector::push_back(&mut expiry_list, loyalty_token.expiry);
+                let remaining_seconds = loyalty_token.expiry - current_time;
+                let remaining_days = remaining_seconds / 86400; 
+                vector::push_back(&mut expiry_list, remaining_days);
+            } else {
+                vector::push_back(&mut expiry_list, 0); 
             };
-            i = i + 1;
         };
-        expiry_list
-    }
+        i = i + 1;
+    };  
+    expiry_list
+}
 
     #[test(admin=@admin_rohit, user=@0x123, user2=@0x345, aptos_framework=@aptos_framework)]
     fun test_cases(admin: &signer,user: &signer,user2: &signer,aptos_framework: &signer) acquires AdminData, LoyaltyToken 

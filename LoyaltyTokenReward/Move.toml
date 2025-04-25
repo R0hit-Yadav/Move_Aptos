@@ -1,16 +1,16 @@
 [package]
-name = "loyalty_token_reward"
+name = "loyalty_token_reward_v2"
 version = "1.0.0"
 authors = []
 
 [addresses]
-admin_rohit="0x374ace93268d3250c156bb8d28837fa1c9c27864e3766fb4abcad08e50d81cef"
+admin_rohit="0x1822865f6d21c260a04f628dda999193cc2e8e6246717af92d6a0b62230aa7e1"
 
 [dev-addresses]
 
 [dependencies.AptosFramework]
 git = "https://github.com/aptos-labs/aptos-framework.git"
-rev = "devnet"
+rev = "testnet"
 subdir = "aptos-framework"
 
 [dev-dependencies]
