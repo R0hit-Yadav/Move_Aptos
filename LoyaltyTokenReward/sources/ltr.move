@@ -195,13 +195,11 @@ module admin_rohit::ltr {
         let user_account = vector::borrow_mut(&mut admin_data.users, index);
         let current_time = timestamp::now_seconds();
         
-        let i = 0;
-        while (i < vector::length(&user_account.token_addresses)) 
-        {
-            let token_addr = *vector::borrow(&user_account.token_addresses, i);
-            if (exists<LoyaltyToken>(token_addr)) 
+       vector::for_each_mut(&mut user_account.token_addresses, |token_addr| 
+       {
+            if (exists<LoyaltyToken>(*token_addr)) 
             {
-                let loyalty_token = borrow_global_mut<LoyaltyToken>(token_addr);
+                let loyalty_token = borrow_global_mut<LoyaltyToken>(*token_addr);
 
                 assert!(loyalty_token.expiry > current_time, E_TOKENS_EXPIRED);
                 if (current_time < loyalty_token.expiry) 
@@ -214,8 +212,7 @@ module admin_rohit::ltr {
                     };
                 };
             };
-            i = i + 1;
-        };
+        });
     }
 
     // withdraw expired tokens 
@@ -297,23 +294,20 @@ module admin_rohit::ltr {
         let user_account = vector::borrow(&admin_data.users, index);
         let current_time = timestamp::now_seconds();
         
-        let i = 0;
-        while (i < vector::length(&user_account.token_addresses)) 
+        vector::for_each_ref(&user_account.token_addresses, |token_addr| 
         {
-            let token_addr = *vector::borrow(&user_account.token_addresses, i);
-            if (exists<LoyaltyToken>(token_addr)) 
+            if (exists<LoyaltyToken>(*token_addr)) 
             {
-                let loyalty_token = borrow_global<LoyaltyToken>(token_addr);
+                let loyalty_token = borrow_global<LoyaltyToken>(*token_addr);
                 if (current_time < loyalty_token.expiry) 
                 {
                     balance = balance + coin::value(&loyalty_token.balance);
                 };
             };
-            i = i + 1;
-        };
-        
-        balance
-    }
+        });
+    
+    balance
+}
 
 #[view]
 public fun check_token_expiry(user_addr: address): vector<u64> acquires AdminData, LoyaltyToken 
