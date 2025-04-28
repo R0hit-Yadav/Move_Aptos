@@ -215,16 +215,14 @@ module admin_rohit::ltr {
         });
     }
 
-    // withdraw expired tokens 
     public entry fun withdraw_expired_tokens(admin: &signer) acquires AdminData, LoyaltyToken 
     {
-
         assert!(signer::address_of(admin) == @admin_rohit, E_NOT_ADMIN);
         let admin_addr = signer::address_of(admin);
         
         let admin_data = borrow_global_mut<AdminData>(@admin_rohit);
 
-          if (!coin::is_account_registered<LoyaltyCoin>(admin_addr)) 
+        if (!coin::is_account_registered<LoyaltyCoin>(admin_addr)) 
         {
             coin::register<LoyaltyCoin>(admin);
         };
@@ -232,41 +230,55 @@ module admin_rohit::ltr {
         let current_time = timestamp::now_seconds();
         let users_to_remove = vector::empty<u64>();
         
+        // itrate through users with index tracking
         let i = 0;
-
         while (i < vector::length(&admin_data.users)) 
         {
             let user_account = vector::borrow_mut(&mut admin_data.users, i);
-            let j = 0;
-            while (j < vector::length(&user_account.token_addresses)) 
+            let expired_tokens = vector::empty<address>();
+            let valid_tokens = vector::empty<address>();
+
+            // first loop tp check the token expiry
+            vector::for_each_ref(&user_account.token_addresses, |token_addr| 
             {
-                let token_addr = *vector::borrow(&user_account.token_addresses, j);
-                if (exists<LoyaltyToken>(token_addr)) 
+                if (exists<LoyaltyToken>(*token_addr)) 
                 {
-                    let loyalty_token = borrow_global_mut<LoyaltyToken>(token_addr);
-                    if (current_time >= loyalty_token.expiry) 
+                    let loyalty_token = borrow_global<LoyaltyToken>(*token_addr);
+                    if (loyalty_token.expiry <= current_time) 
                     {
-                        let amount = coin::value(&loyalty_token.balance);
-                        if (amount > 0) 
-                        {
-                            let tokens = coin::extract(&mut loyalty_token.balance, amount);
-                            coin::burn(tokens, &admin_data.burn_cap);
-                        };
-                        vector::remove(&mut user_account.token_addresses, j);
-                        continue
-                    };
+                        vector::push_back(&mut expired_tokens, *token_addr);
+                    } 
+                    else 
+                    {
+                        vector::push_back(&mut valid_tokens, *token_addr);
+                    }
+                }
+            });
+
+            // expird token remove
+            vector::for_each_mut(&mut expired_tokens, |token_addr| 
+            {
+                let loyalty_token = borrow_global_mut<LoyaltyToken>(*token_addr);
+                let amount = coin::value(&loyalty_token.balance);
+                if (amount > 0) 
+                {
+                    let tokens = coin::extract(&mut loyalty_token.balance, amount);
+                    coin::burn(tokens, &admin_data.burn_cap);
                 };
-                j = j + 1;
-            };
-            
+            });
+
+            // update user account with valid tokens
+            user_account.token_addresses = valid_tokens;
+
+            //users with no tokens for removal
             if (vector::is_empty(&user_account.token_addresses)) 
             {
                 vector::push_back(&mut users_to_remove, i);
             };
             i = i + 1;
         };
-        
-        // no token no user
+
+        // Remove empty users (reverse order to preserve indices)
         let k = vector::length(&users_to_remove);
         while (k > 0) 
         {
@@ -275,6 +287,68 @@ module admin_rohit::ltr {
             vector::remove(&mut admin_data.users, index);
         };
     }
+
+
+    // // withdraw expired tokens 
+    // public entry fun withdraw_expired_tokens(admin: &signer) acquires AdminData, LoyaltyToken 
+    // {
+
+    //     assert!(signer::address_of(admin) == @admin_rohit, E_NOT_ADMIN);
+    //     let admin_addr = signer::address_of(admin);
+        
+    //     let admin_data = borrow_global_mut<AdminData>(@admin_rohit);
+
+    //       if (!coin::is_account_registered<LoyaltyCoin>(admin_addr)) 
+    //     {
+    //         coin::register<LoyaltyCoin>(admin);
+    //     };
+
+    //     let current_time = timestamp::now_seconds();
+    //     let users_to_remove = vector::empty<u64>();
+        
+    //     let i = 0;
+
+    //     while (i < vector::length(&admin_data.users)) 
+    //     {
+    //         let user_account = vector::borrow_mut(&mut admin_data.users, i);
+    //         let j = 0;
+    //         while (j < vector::length(&user_account.token_addresses)) 
+    //         {
+    //             let token_addr = *vector::borrow(&user_account.token_addresses, j);
+    //             if (exists<LoyaltyToken>(token_addr)) 
+    //             {
+    //                 let loyalty_token = borrow_global_mut<LoyaltyToken>(token_addr);
+    //                 if (current_time >= loyalty_token.expiry) 
+    //                 {
+    //                     let amount = coin::value(&loyalty_token.balance);
+    //                     if (amount > 0) 
+    //                     {
+    //                         let tokens = coin::extract(&mut loyalty_token.balance, amount);
+    //                         coin::burn(tokens, &admin_data.burn_cap);
+    //                     };
+    //                     vector::remove(&mut user_account.token_addresses, j);
+    //                     continue
+    //                 };
+    //             };
+    //             j = j + 1;
+    //         };
+            
+    //         if (vector::is_empty(&user_account.token_addresses)) 
+    //         {
+    //             vector::push_back(&mut users_to_remove, i);
+    //         };
+    //         i = i + 1;
+    //     };
+        
+    //     // no token no user
+    //     let k = vector::length(&users_to_remove);
+    //     while (k > 0) 
+    //     {
+    //         k = k - 1;
+    //         let index = vector::pop_back(&mut users_to_remove);
+    //         vector::remove(&mut admin_data.users, index);
+    //     };
+    // }
 
     // check balance 
     #[view]
