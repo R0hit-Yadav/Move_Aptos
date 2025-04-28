@@ -10,7 +10,7 @@ admin_rohit="0x1822865f6d21c260a04f628dda999193cc2e8e6246717af92d6a0b62230aa7e1"
 
 [dependencies.AptosFramework]
 git = "https://github.com/aptos-labs/aptos-framework.git"
-rev = "testnet"
+rev = "mainnet"
 subdir = "aptos-framework"
 
 [dev-dependencies]

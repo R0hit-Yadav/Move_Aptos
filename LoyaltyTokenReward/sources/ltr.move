@@ -230,9 +230,7 @@ module admin_rohit::ltr {
         };
 
         let current_time = timestamp::now_seconds();
-        
         let users_to_remove = vector::empty<u64>();
-        
         
         let i = 0;
 
@@ -323,13 +321,11 @@ public fun check_token_expiry(user_addr: address): vector<u64> acquires AdminDat
 
     let user_account = vector::borrow(&admin_data.users, index);
     let current_time = timestamp::now_seconds(); 
-    let i = 0;
-    while (i < vector::length(&user_account.token_addresses)) 
+    vector::for_each_ref(&user_account.token_addresses, |token_addr| 
     {
-        let token_addr = *vector::borrow(&user_account.token_addresses, i);
-        if (exists<LoyaltyToken>(token_addr)) 
+        if (exists<LoyaltyToken>(*token_addr)) 
         {
-            let loyalty_token = borrow_global<LoyaltyToken>(token_addr);
+            let loyalty_token = borrow_global<LoyaltyToken>(*token_addr);
             if (loyalty_token.expiry > current_time) 
             {
                 let remaining_seconds = loyalty_token.expiry - current_time;
@@ -339,8 +335,8 @@ public fun check_token_expiry(user_addr: address): vector<u64> acquires AdminDat
                 vector::push_back(&mut expiry_list, 0); 
             };
         };
-        i = i + 1;
-    };  
+    });
+
     expiry_list
 }
 

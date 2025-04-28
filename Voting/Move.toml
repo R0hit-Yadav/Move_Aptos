@@ -4,7 +4,8 @@ version = "1.0.0"
 authors = []
 
 [addresses]
-voting_app_addr="0x1822865f6d21c260a04f628dda999193cc2e8e6246717af92d6a0b62230aa7e1"
+voting_app_addr="0x374ace93268d3250c156bb8d28837fa1c9c27864e3766fb4abcad08e50d81cef"
+# 0x3c8a30fdeac6bfbeb00bcaad602dee6f01c12f4166ae2088f53fa5a1d78a3efb
 
 [dev-addresses]
 
