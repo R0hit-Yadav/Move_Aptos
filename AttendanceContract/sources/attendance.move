@@ -3,6 +3,8 @@ module rohit_add::attendance
     use std::vector;
     use std::debug::print;
     use std::string::{String,utf8};
+    use aptos_framework::account;
+    use std::signer;
 
     struct Students has store, key, drop, copy
     {
@@ -17,8 +19,14 @@ module rohit_add::attendance
         rollNo: u8,
     }
 
-    public fun create_student(_student: Student,_students: &mut Students): Student 
+    entry fun init_module(account: &signer) 
     {
+        move_to(account, Students { students: vector::empty() });
+    }
+
+    public fun create_student(account: &signer,_student:Student) acquires Students
+    {
+        let students = borrow_global_mut<Students>(signer::address_of(account));
         let newStudent = Student 
         {
             age:_student.age,
@@ -27,8 +35,7 @@ module rohit_add::attendance
             attendanceValue:_student.attendanceValue,
             rollNo:_student.rollNo,
         };
-        add_student(_students, newStudent);
-        return newStudent
+        add_student(students, newStudent);
     }
 
     public fun add_student(_students: &mut Students, _student: Student) 
@@ -36,26 +43,52 @@ module rohit_add::attendance
         vector::push_back(&mut _students.students, _student);
     }
 
-    public fun incrementAttendance(student: &mut Student)
-    {
-        student.attendanceValue = student.attendanceValue + 1;
+     public entry fun increment_attendance(account: &signer, roll_no: u8) acquires Students
+     {
+        let students = borrow_global_mut<Students>(signer::address_of(account));
+        let i = 0;
+        while (i < vector::length(&students.students)) 
+        {
+            let student = vector::borrow_mut(&mut students.students, i);
+            if (student.rollNo == roll_no) 
+            {
+                student.attendanceValue = student.attendanceValue + 1;
+                break;
+            };
+            i = i + 1;
+        };
     }
 
-    public fun getParticularStudent(student: &Student): &Student 
-    {
-        return student
+    #[view]
+    public fun get_student(account: address, roll_no: u8): Student acquires Students {
+        let students = borrow_global<Students>(account);
+        let i = 0;
+        while (i < vector::length(&students.students)) {
+            let student = vector::borrow(&students.students, i);
+            if (student.rollNo == roll_no) {
+                return *student;
+            };
+            i = i + 1;
+        };
+        abort 1 // Student not found
     }
 
-    public fun getTotalnoOfStudent(student : &Students):u64
-    {
-        let totalStudent = vector::length(&student.students);
-        return totalStudent
+    #[view]
+     public fun get_total_students(account: address): u64 acquires Students {
+        let students = borrow_global<Students>(account);
+        vector::length(&students.students)
     }
 
 
-    #[test]
-    fun test_create_student()
+    #[test(admin=@rohit_add,aptos_framework=@aptos_framework)]
+    fun test_create_student(admin: &signer) acquires Students
     {
+
+        let admin_addr = signer::address_of(admin);
+        account::create_account_for_test(admin_addr);
+
+        init_module(admin);
+
         let rohit = Student{
             age: 20,
             fname: utf8(b"Rohit"),
@@ -63,7 +96,7 @@ module rohit_add::attendance
             attendanceValue: 0,
             rollNo: 1,
         };
-        let stud = Students{ students: (vector[rohit])};
+        create_student(admin, rohit);
 
         let dev = Student{
             age:21,
@@ -72,7 +105,7 @@ module rohit_add::attendance
             attendanceValue: 0,
             rollNo: 2,
         };
-        let stud2 = Students{ students: (vector[dev])};
+        create_student(admin, dev);
 
         let krina = Student{
             age:20,
@@ -81,7 +114,7 @@ module rohit_add::attendance
             attendanceValue: 0,
             rollNo: 3,
         };
-        let stud3 = Students{ students: (vector[krina])};
+        create_student(admin,krina);
 
         let ronil = Student{
             age:22,
@@ -90,7 +123,7 @@ module rohit_add::attendance
             attendanceValue: 0,
             rollNo: 4,
         };
-        let stud4 = Students{ students: (vector[ronil])};
+        create_student(admin,ronil);
 
         let yash = Student{
             age:19,
@@ -99,40 +132,27 @@ module rohit_add::attendance
             attendanceValue: 0,
             rollNo: 5,
         };
-        let stud5 = Students{ students: (vector[yash])};
+        create_student(admin,yash);
 
 
-        let createStud = create_student(rohit, &mut stud);  
-        assert!(createStud.fname == rohit.fname,0);
 
-        let createStud2 = create_student(dev, &mut stud2);
-        let createStud3 = create_student(krina, &mut stud3);
-        let createStud4 = create_student(ronil, &mut stud4);
-        let createStud5 = create_student(yash, &mut stud5);
-
-        incrementAttendance(&mut createStud);
-        incrementAttendance(&mut createStud2);
-        incrementAttendance(&mut createStud);
-        incrementAttendance(&mut createStud);
-        incrementAttendance(&mut createStud);
-        incrementAttendance(&mut createStud);
-        incrementAttendance(&mut createStud3);
-        incrementAttendance(&mut createStud2);
-        incrementAttendance(&mut createStud);
-        incrementAttendance(&mut createStud4);
-        incrementAttendance(&mut createStud2);
-        incrementAttendance(&mut createStud5);
-        incrementAttendance(&mut createStud);
-        incrementAttendance(&mut createStud2);
-        incrementAttendance(&mut createStud2);
+        increment_attendance(admin,1);
+        increment_attendance(admin,2);
+        increment_attendance(admin,1);
+        increment_attendance(admin,3);
+        increment_attendance(admin,4);
+        increment_attendance(admin,3);
+        increment_attendance(admin,3);
+        increment_attendance(admin,5);
+        increment_attendance(admin,1);
 
 
-        let p_student = getParticularStudent(&mut createStud);
-        print(p_student);
-        let p_student2 = getParticularStudent(&mut createStud2);
-        print(p_student2);
-        let p_student3 = getParticularStudent(&mut createStud3);
-        print(p_student3);
+        let rohit_data = get_student(admin_addr, 1);
+        print(&rohit_data);
+        let dev_data = get_student(admin_addr, 2);
+        print(&dev_data);
+        let krina_data = get_student(admin_addr,3);
+        print(&krina_data);
 
     }
 }
