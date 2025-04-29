@@ -232,9 +232,8 @@ module admin_rohit::ltr {
         
         // itrate through users with index tracking
         let i = 0;
-        while (i < vector::length(&admin_data.users)) 
+       vector::for_each_mut(&mut admin_data.users, |user_account| 
         {
-            let user_account = vector::borrow_mut(&mut admin_data.users, i);
             let expired_tokens = vector::empty<address>();
             let valid_tokens = vector::empty<address>();
 
@@ -276,16 +275,13 @@ module admin_rohit::ltr {
                 vector::push_back(&mut users_to_remove, i);
             };
             i = i + 1;
-        };
+        });
 
         // Remove empty users (reverse order to preserve indices)
-        let k = vector::length(&users_to_remove);
-        while (k > 0) 
+        vector::for_each_mut(&mut users_to_remove, |index| 
         {
-            k = k - 1;
-            let index = vector::pop_back(&mut users_to_remove);
-            vector::remove(&mut admin_data.users, index);
-        };
+            vector::remove(&mut admin_data.users, *index);
+        });
     }
 
 
