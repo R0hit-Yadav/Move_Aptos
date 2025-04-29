@@ -89,6 +89,11 @@ module admin_rohit::ltr {
         expiry: u64,
     }
 
+    struct Demo has key 
+    {
+        number: u64,
+    }
+
     // User account
     struct UserAccount has store, drop 
     {
@@ -436,10 +441,10 @@ public fun check_token_expiry(user_addr: address): vector<u64> acquires AdminDat
 
         //after mint
         print(&utf8(b"Mint Some tokens"));
-        mint_tokens(admin, user1_addr, 100, 30);
+        mint_tokens(admin, user1_addr, 5000, 40);
         print(&utf8(b"User1 balance after mint"));
         print(&check_balance(user1_addr));
-        assert!(check_balance(user1_addr) == 100, 1);
+        assert!(check_balance(user1_addr) == 5000, 1);
 
         // check expiry of token of address
         print(&utf8(b"Check user1 tokens expiry in days"));
@@ -448,7 +453,7 @@ public fun check_token_expiry(user_addr: address): vector<u64> acquires AdminDat
         // Redeem tokens
         print(&utf8(b"Redeem tokens"));
         redeem_tokens(user);
-        assert!(coin::balance<LoyaltyCoin>(user1_addr) == 100, 2);
+        assert!(coin::balance<LoyaltyCoin>(user1_addr) == 5000, 2);
         print(&utf8(b"User1 balance after redeem"));
         print(&check_balance(user1_addr));
         assert!(check_balance(user1_addr) == 0, 3);

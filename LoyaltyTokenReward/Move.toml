@@ -1,16 +1,21 @@
 [package]
-name = "loyalty_token_reward_v2"
-version = "1.0.0"
+name = "loyalty_token_reward_version_3"
+version = "3.0.0"
+upgrade_policy = "compatible"
+
 authors = []
 
 [addresses]
-admin_rohit="0x1822865f6d21c260a04f628dda999193cc2e8e6246717af92d6a0b62230aa7e1"
+# admin_rohit="0x0307be30561a97a647e7ee18f5811212c5a2038ca64cc5b5ccbfc33239e51fa6"
+#check_upgrade_policy address
+admin_rohit="0x7b10e28b9109e8deb97056680ee1936fb9ccb32aa042a063a1db5cf7bcb10fdc"
+
 
 [dev-addresses]
 
 [dependencies.AptosFramework]
 git = "https://github.com/aptos-labs/aptos-framework.git"
-rev = "mainnet"
+rev = "testnet"
 subdir = "aptos-framework"
 
 [dev-dependencies]

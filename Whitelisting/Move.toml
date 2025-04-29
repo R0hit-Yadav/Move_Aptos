@@ -1,10 +1,12 @@
 [package]
 name = "whitelisting_fund"
 version = "1.0.0"
+
 authors = []
 
 [addresses]
 rohit_add="0x374ace93268d3250c156bb8d28837fa1c9c27864e3766fb4abcad08e50d81cef"
+# rohit_add="0x7b10e28b9109e8deb97056680ee1936fb9ccb32aa042a063a1db5cf7bcb10fdc"
 multisig_addr="1343a6e0a0f6107a8d8bd4970014c7ed9daa413c2d1eb11203ffe23c61eefd7b"
 
 [dev-addresses]

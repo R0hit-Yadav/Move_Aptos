@@ -93,6 +93,11 @@ module rohit_add::Whitelist {
         users: vector<address>
     }
 
+    struct Demo has key 
+    {
+        num: u64,
+    }
+
     // track of all whitelisted users 
     struct Vault has key 
     {
