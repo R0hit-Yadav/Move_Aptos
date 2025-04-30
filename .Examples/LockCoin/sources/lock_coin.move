@@ -289,6 +289,9 @@ module rohit_add::locked_coins {
     use aptos_framework::aptos_coin::{Self, AptosCoin};
     #[test_only]
     use aptos_framework::aptos_account;
+    #[test_only]
+    use std::debug::print;
+    use std::string::{String,utf8};
 
     #[test_only]
     fun setup(aptos_framework: &signer, sponsor: &signer): BurnCapability<AptosCoin> 
@@ -318,6 +321,8 @@ module rohit_add::locked_coins {
         initialize_sponsor<AptosCoin>(sponsor, sponsor_address);
         add_locked_coins<AptosCoin>(sponsor, recipient_addr, 1000, 1000);
         assert!(total_locks<AptosCoin>(sponsor_address) == 1, 0);
+        print(&utf8(b"total number of lock"));
+        print(&total_locks<AptosCoin>(sponsor_address));
 
         timestamp::fast_forward_seconds(1000);
 
