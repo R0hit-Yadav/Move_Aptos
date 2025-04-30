@@ -1,0 +1,17 @@
+[package]
+name = "lock_coin"
+version = "1.0.0"
+authors = []
+
+[addresses]
+rohit_add="0xecfd4a8c7055ac8dcb2ed63db0ad7badc0825e580b53ea6249458e1949722689"
+#key = 0x5aaacab0e8f7e7030d6b28720030f20865c1bac3d472f2be54d808422e242040
+
+[dev-addresses]
+
+[dependencies.AptosFramework]
+git = "https://github.com/aptos-labs/aptos-framework.git"
+rev = "testnet"
+subdir = "aptos-framework"
+
+[dev-dependencies]
