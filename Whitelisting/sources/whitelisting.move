@@ -66,6 +66,7 @@ module rohit_add::Whitelist {
     use std::vector;
     use std::event;
     use std::debug::print;
+    use std::string::{String,utf8};
     use aptos_framework::coin;
     use aptos_framework::aptos_coin::{AptosCoin, Self};
     use aptos_framework::account;
@@ -408,6 +409,7 @@ module rohit_add::Whitelist {
         vector::push_back(&mut new_users, user2_addr);
         // vector::push_back(&mut new_users, user3_addr);
         add_to_whitelist(admin, new_users);
+        print(&utf8(b"All user Adddress"));
         print(&new_users);
 
         //try to add duplicate user 
@@ -421,29 +423,39 @@ module rohit_add::Whitelist {
         // assert!(is_whitelisted(user3_addr), 3);
 
         // deposit test
+        print(&utf8(b"Add 50 coins in both account"));
         deposit(user1, 50);
         deposit(user2, 50);
         // deposit(user3, 50); // not whitelisted
+        print(&utf8(b"User 1 Balance: "));
         print(&get_balance(user1_addr));
+        print(&utf8(b"User 2 Balance: "));
         print(&get_balance(user2_addr));
         assert!(get_balance(user1_addr) == 50, 3);
         assert!(get_balance(user2_addr) == 50, 4);
 
 
         // transfer test
+        print(&utf8(b"Transfer from user 1 to 2 25 coins "));
         transfer(admin, user1_addr, user2_addr, 25);
 
+        print(&utf8(b"Updated Balance After Transfer"));
+        print(&utf8(b"User 1 Balance: "));
         print(&get_balance(user1_addr));
+        print(&utf8(b"Use 2 balance"));
         print(&get_balance(user2_addr));
 
         assert!(get_balance(user1_addr) == 25, 5);
         assert!(get_balance(user2_addr) == 75, 6);
 
         // withdraw test
+        print(&utf8(b"Now Adamin Withdraw 25 from user 1:"));
         withdraw(admin, 25, user1_addr);
 
         assert!(get_balance(user1_addr) == 0, 7);
+        print(&utf8(b"So after Withdraw updated User 1 Balance is:"));
         print(&get_balance(user1_addr));
+
 
         withdraw(admin, 75, user2_addr);
 

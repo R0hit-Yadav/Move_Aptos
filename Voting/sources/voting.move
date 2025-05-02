@@ -331,6 +331,7 @@ module voting_app_addr::voting {
         )
     }
 
+
     /// Get or create user stake store
     /// If user does not have stake store, create one
     /// Returns (user_stake.stake_store, is_new_stake_store)
