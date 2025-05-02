@@ -1,14 +1,14 @@
 [package]
-name = "loyalty_token_reward_version_3"
-version = "3.0.0"
-upgrade_policy = "compatible"
+name = "loyalty_token_reward_version_on_pc"
+version = "1.0.0"
 
 authors = []
 
 [addresses]
 # admin_rohit="0x0307be30561a97a647e7ee18f5811212c5a2038ca64cc5b5ccbfc33239e51fa6"
 #check_upgrade_policy address
-admin_rohit="0x7b10e28b9109e8deb97056680ee1936fb9ccb32aa042a063a1db5cf7bcb10fdc"
+admin_rohit="0x879345d1a402cadb0062ee159448988118cf4eefffd79cf16d6d9c58adc37a04"
+# key ="0x7538fa17695f6224afd66b6fbefd00afc595536e10281bd63e04aef66c6bc482"
 
 
 [dev-addresses]

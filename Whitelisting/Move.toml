@@ -1,11 +1,13 @@
 [package]
-name = "whitelisting_fund"
-version = "1.0.0"
+name = "whitelisting_fund_pc"
+version = "2.0.0"
 
 authors = []
 
 [addresses]
-rohit_add="0x374ace93268d3250c156bb8d28837fa1c9c27864e3766fb4abcad08e50d81cef"
+rohit_add="0x879345d1a402cadb0062ee159448988118cf4eefffd79cf16d6d9c58adc37a04"
+# key ="0x7538fa17695f6224afd66b6fbefd00afc595536e10281bd63e04aef66c6bc482"
+
 # rohit_add="0x7b10e28b9109e8deb97056680ee1936fb9ccb32aa042a063a1db5cf7bcb10fdc"
 multisig_addr="1343a6e0a0f6107a8d8bd4970014c7ed9daa413c2d1eb11203ffe23c61eefd7b"
 
@@ -13,7 +15,7 @@ multisig_addr="1343a6e0a0f6107a8d8bd4970014c7ed9daa413c2d1eb11203ffe23c61eefd7b"
 
 [dependencies.AptosFramework]
 git = "https://github.com/aptos-labs/aptos-framework.git"
-rev = "testnet"
+rev = "mainnet"
 subdir = "aptos-framework"
 
 [dev-dependencies]

@@ -89,10 +89,6 @@ module admin_rohit::ltr {
         expiry: u64,
     }
 
-    struct Demo has key 
-    {
-        number: u64,
-    }
 
     // User account
     struct UserAccount has store, drop 
