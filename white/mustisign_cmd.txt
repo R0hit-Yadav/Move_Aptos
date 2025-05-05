@@ -1,0 +1,156 @@
+// multisig address
+codezeros@rohit-yadav:~/CodeZeros/Move_Aptos/white$ aptos multisig create --additional-owners 0x7b86b88257678fc472d742f704aa3e3c1dd03074c1c99babc5feeaf21dc6c603 0xbd77e562f0936acf218b99402d03fccb44b2c02297f670e7a72e9d81608fd04a --num-signatures-required 2 --assume-yes
+Transaction submitted: https://explorer.aptoslabs.com/txn/0x930138b85c7a4e2561fdc2be27d158a080d5258a9322b0167bf5ec9c537a30a5?network=testnet
+{
+  "Result": {
+    "multisig_address": "65308536e0090aaa890ef0412b0f4357c87c5838069d91fda6ea39a7cc92c1ed",
+    "transaction_hash": "0x930138b85c7a4e2561fdc2be27d158a080d5258a9322b0167bf5ec9c537a30a5",
+    "gas_used": 1702,
+    "gas_unit_price": 100,
+    "sender": "4ce82fc3a148126b592f6e25d9ee447e70b59880f41bcfc9a15095903e22eb23",
+    "sequence_number": 7,
+    "success": true,
+    "timestamp_us": 1746424439663328,
+    "version": 6707913772,
+    "vm_status": "Executed successfully"
+  }
+}
+
+//===> Check number of requirement
+codezeros@rohit-yadav:~/CodeZeros/Move_Aptos/white$ aptos move view --function-id 0x1::multisig_account::num_signatures_required --args address:"65308536e0090aaa890ef0412b0f4357c87c5838069d91fda6ea39a7cc92c1ed"
+{
+  "Result": [
+    "2"
+  ]
+}
+
+//===> Check owners addresses
+codezeros@rohit-yadav:~/CodeZeros/Move_Aptos/white$ aptos move view --function-id 0x1::multisig_account::owners --args address:"65308536e0090aaa890ef0412b0f4357c87c5838069d91fda6ea39a7cc92c1ed"
+{
+  "Result": [
+    [
+      "0x7b86b88257678fc472d742f704aa3e3c1dd03074c1c99babc5feeaf21dc6c603",
+      "0xbd77e562f0936acf218b99402d03fccb44b2c02297f670e7a72e9d81608fd04a",
+      "0x4ce82fc3a148126b592f6e25d9ee447e70b59880f41bcfc9a15095903e22eb23"
+    ]
+  ]
+}
+
+//===> get last resolve tx sq number
+codezeros@rohit-yadav:~/CodeZeros/Move_Aptos/white$ aptos move view --function-id 0x1::multisig_account::last_resolved_sequence_number --args address:"65308536e0090aaa890ef0412b0f4357c87c5838069d91fda6ea39a7cc92c1ed"
+{
+  "Result": [
+    "0"
+  ]
+}
+
+// ===> create transaction from owner 1
+codezeros@rohit-yadav:~/CodeZeros/Move_Aptos/white$ aptos multisig create-transaction --multisig-address 65308536e0090aaa890ef0412b0f4357c87c5838069d91fda6ea39a7cc92c1ed --json-file publication.json --store-hash-only --private-key-file own1.key --assume-yes
+Transaction submitted: https://explorer.aptoslabs.com/txn/0x1052a316e1442fdaed01352411df2433462e31c4917a55430a84bea963140d29?network=testnet
+{
+  "Result": {
+    "transaction_hash": "0x1052a316e1442fdaed01352411df2433462e31c4917a55430a84bea963140d29",
+    "gas_used": 467,
+    "gas_unit_price": 100,
+    "sender": "4ce82fc3a148126b592f6e25d9ee447e70b59880f41bcfc9a15095903e22eb23",
+    "sequence_number": 8,
+    "success": true,
+    "timestamp_us": 1746424633934117,
+    "version": 6707918393,
+    "vm_status": "Executed successfully"
+  }
+}
+
+//===> check transaction details
+codezeros@rohit-yadav:~/CodeZeros/Move_Aptos/white$ aptos move view --function-id 0x1::multisig_account::get_transaction --args address:"65308536e0090aaa890ef0412b0f4357c87c5838069d91fda6ea39a7cc92c1ed" u64:1
+{
+  "Result": [
+    {
+      "creation_time_secs": "1746424633",
+      "creator": "0x4ce82fc3a148126b592f6e25d9ee447e70b59880f41bcfc9a15095903e22eb23",
+      "payload": {
+        "vec": []
+      },
+      "payload_hash": {
+        "vec": [
+          "0x6a011b52be1ffc81007b851f0b77fc8a2fc3a41d55e67012661f41f3bc87a32a"
+        ]
+      },
+      "votes": {
+        "data": [
+          {
+            "key": "0x4ce82fc3a148126b592f6e25d9ee447e70b59880f41bcfc9a15095903e22eb23",
+            "value": true
+          }
+        ]
+      }
+    }
+  ]
+}
+
+//==> try to excute with 1 vote
+codezeros@rohit-yadav:~/CodeZeros/Move_Aptos/white$ aptos multisig execute-with-payload --multisig-address 65308536e0090aaa890ef0412b0f4357c87c5838069d91fda6ea39a7cc92c1ed --json-file publication.json --private-key-file own1.key --max-gas 10000 --assume-yes
+{
+  "Error": "API error: API error Error(VmError): Invalid transaction: Type: Validation Code: MULTISIG_TRANSACTION_INSUFFICIENT_APPROVALS"
+}
+
+//===> approve transaction from own2 
+codezeros@rohit-yadav:~/CodeZeros/Move_Aptos/white$ aptos multisig approve --multisig-address 65308536e0090aaa890ef0412b0f4357c87c5838069d91fda6ea39a7cc92c1ed --sequence-number 1 --private-key-file own2.key --assume-yes
+Transaction submitted: https://explorer.aptoslabs.com/txn/0xd2d5c5df26ec0b7a1c837a631d19c64a557888809031665c5a1e6c5be26dced3?network=testnet
+{
+  "Result": {
+    "transaction_hash": "0xd2d5c5df26ec0b7a1c837a631d19c64a557888809031665c5a1e6c5be26dced3",
+    "gas_used": 20,
+    "gas_unit_price": 100,
+    "sender": "7b86b88257678fc472d742f704aa3e3c1dd03074c1c99babc5feeaf21dc6c603",
+    "sequence_number": 0,
+    "success": true,
+    "timestamp_us": 1746424766998621,
+    "version": 6707921527,
+    "vm_status": "Executed successfully"
+  }
+}
+
+//===> execute transaction
+codezeros@rohit-yadav:~/CodeZeros/Move_Aptos/white$ aptos multisig execute-with-payload --multisig-address 65308536e0090aaa890ef0412b0f4357c87c5838069d91fda6ea39a7cc92c1ed --json-file publication.json --private-key-file own1.key --max-gas 10000 --assume-yes
+Transaction submitted: https://explorer.aptoslabs.com/txn/0xecb97bb41b56ae9d0d2d2a04946e12dc44ab8fb1a013c5d8924feead2a4c525f?network=testnet
+{
+  "Result": {
+    "transaction_hash": "0xecb97bb41b56ae9d0d2d2a04946e12dc44ab8fb1a013c5d8924feead2a4c525f",
+    "gas_used": 86,
+    "gas_unit_price": 100,
+    "sender": "4ce82fc3a148126b592f6e25d9ee447e70b59880f41bcfc9a15095903e22eb23",
+    "sequence_number": 9,
+    "success": true,
+    "timestamp_us": 1746424789052535,
+    "version": 6707922069,
+    "vm_status": "Executed successfully"
+  }
+}
+
+//===> get next number 
+codezeros@rohit-yadav:~/CodeZeros/Move_Aptos/white$ aptos move view --function-id 0x1::multisig_account::last_resolved_sequence_number --args address:"65308536e0090aaa890ef0412b0f4357c87c5838069d91fda6ea39a7cc92c1ed"
+{
+  "Result": [
+    "1"
+  ]
+}
+
+//===> create another transaction from own2 
+codezeros@rohit-yadav:~/CodeZeros/Move_Aptos/white$ aptos multisig create-transaction --multisig-address 65308536e0090aaa890ef0412b0f4357c87c5838069d91fda6ea39a7cc92c1ed --json-file publication.json --store-hash-only --private-key-file own2.key --assume-yes
+Transaction submitted: https://explorer.aptoslabs.com/txn/0x222c5067f386bd4495b7a3886ce49fc3ce5942801dc0f558e4e0e78a1d2f1d4f?network=testnet
+{
+  "Result": {
+    "transaction_hash": "0x222c5067f386bd4495b7a3886ce49fc3ce5942801dc0f558e4e0e78a1d2f1d4f",
+    "gas_used": 467,
+    "gas_unit_price": 100,
+    "sender": "7b86b88257678fc472d742f704aa3e3c1dd03074c1c99babc5feeaf21dc6c603",
+    "sequence_number": 1,
+    "success": true,
+    "timestamp_us": 1746424831523460,
+    "version": 6707923152,
+    "vm_status": "Executed successfully"
+  }
+}
+
+// continue same process 
