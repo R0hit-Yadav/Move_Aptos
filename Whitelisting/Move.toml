@@ -15,7 +15,7 @@ multisig_addr="1343a6e0a0f6107a8d8bd4970014c7ed9daa413c2d1eb11203ffe23c61eefd7b"
 
 [dependencies.AptosFramework]
 git = "https://github.com/aptos-labs/aptos-framework.git"
-rev = "mainnet"
+rev = "testnet"
 subdir = "aptos-framework"
 
 [dev-dependencies]

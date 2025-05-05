@@ -1,0 +1,16 @@
+[package]
+name = "white_new_pc"
+version = "1.0.0"
+authors = []
+
+[addresses]
+rohit_add="0x4ce82fc3a148126b592f6e25d9ee447e70b59880f41bcfc9a15095903e22eb23"
+#key = "0x7f664dc0a74f21407eecb301683cf46cabfa4b0cd7816e4b8522fab91927771d"
+[dev-addresses]
+
+[dependencies.AptosFramework]
+git = "https://github.com/aptos-labs/aptos-framework.git"
+rev = "testnet"
+subdir = "aptos-framework"
+
+[dev-dependencies]
